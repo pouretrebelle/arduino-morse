@@ -6,6 +6,9 @@ int PIN_BUTTON = 4;
 bool buttonState = false;
 bool active = false;
 
+int dialRead = 0;
+int PIN_DIAL = A0;
+
 void setup(void) {
   pinMode(PIN_COLOR_R, OUTPUT);
   pinMode(PIN_COLOR_G, OUTPUT);
@@ -13,33 +16,62 @@ void setup(void) {
 
   pinMode(PIN_BUTTON, INPUT);
 
-  // start all on
-  digitalWrite(PIN_COLOR_R, HIGH);
-  digitalWrite(PIN_COLOR_G, HIGH);
-  digitalWrite(PIN_COLOR_B, HIGH);
+  pinMode(PIN_DIAL, INPUT);
 }
 
 void loop(void) {
+
+  // between 11 and 908
+  dialRead = analogRead(PIN_DIAL);
 
   if (buttonState != digitalRead(PIN_BUTTON)) {
     buttonState = digitalRead(PIN_BUTTON);
     if (buttonState == true) {
       active = !active;
-
-      if (active == true) {
-        // go red if active
-        digitalWrite(PIN_COLOR_R, HIGH);
-        digitalWrite(PIN_COLOR_G, LOW);
-        digitalWrite(PIN_COLOR_B, LOW);
-      }
-      else {
-        // go turq if not active
-        digitalWrite(PIN_COLOR_R, LOW);
-        digitalWrite(PIN_COLOR_G, HIGH);
-        digitalWrite(PIN_COLOR_B, HIGH);
-      }
-
     }
+  }
+
+  if (active == true) {
+    if (dialRead < 130) {
+      digitalWrite(PIN_COLOR_R, LOW);
+      digitalWrite(PIN_COLOR_G, HIGH);
+      digitalWrite(PIN_COLOR_B, LOW);
+    }
+    else if (dialRead < 260) {
+      digitalWrite(PIN_COLOR_R, LOW);
+      digitalWrite(PIN_COLOR_G, LOW);
+      digitalWrite(PIN_COLOR_B, HIGH);
+    }
+    else if (dialRead < 390) {
+      digitalWrite(PIN_COLOR_R, HIGH);
+      digitalWrite(PIN_COLOR_G, LOW);
+      digitalWrite(PIN_COLOR_B, LOW);
+    }
+    else if (dialRead < 520) {
+      digitalWrite(PIN_COLOR_R, LOW);
+      digitalWrite(PIN_COLOR_G, HIGH);
+      digitalWrite(PIN_COLOR_B, HIGH);
+    }
+    else if (dialRead < 650) {
+      digitalWrite(PIN_COLOR_R, HIGH);
+      digitalWrite(PIN_COLOR_G, HIGH);
+      digitalWrite(PIN_COLOR_B, LOW);
+    }
+    else if (dialRead < 780) {
+      digitalWrite(PIN_COLOR_R, HIGH);
+      digitalWrite(PIN_COLOR_G, LOW);
+      digitalWrite(PIN_COLOR_B, HIGH);
+    }
+    else {
+      digitalWrite(PIN_COLOR_R, HIGH);
+      digitalWrite(PIN_COLOR_G, HIGH);
+      digitalWrite(PIN_COLOR_B, HIGH);
+    }
+  }
+  else {
+    digitalWrite(PIN_COLOR_R, LOW);
+    digitalWrite(PIN_COLOR_G, LOW);
+    digitalWrite(PIN_COLOR_B, LOW);
   }
 }
 
