@@ -12,7 +12,7 @@ int PIN_DIAL = A0;
 int PIN_BUZZER = 5;
 int buzzSpeed = 20;
 
-const char* message = "SOS";
+char* message = "SOS";
 
 void setup(void) {
   pinMode(PIN_COLOR_R, OUTPUT);
