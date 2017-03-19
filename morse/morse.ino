@@ -1,3 +1,6 @@
+#include <QList.h>
+#include "QList.cpp"
+
 int PIN_COLOR_R = 12;
 int PIN_COLOR_G = 14;
 int PIN_COLOR_B = 13;
@@ -12,9 +15,11 @@ int PIN_DIAL = A0;
 int PIN_BUZZER = 5;
 int buzzSpeed = 20;
 
-char* message = "SOS";
+QList<char*> incoming;
 
 void setup(void) {
+  incoming.push_back("SOS");
+
   pinMode(PIN_COLOR_R, OUTPUT);
   pinMode(PIN_COLOR_G, OUTPUT);
   pinMode(PIN_COLOR_B, OUTPUT);
@@ -26,10 +31,13 @@ void setup(void) {
 void loop(void) {
   checkStates();
 
-  if (message) {
-    outputString(morseEncode(message));
-    message = "";
+  while (incoming.size() > 0) {
+    outputString(morseEncode(incoming.front()));
+    incoming.pop_front();
+    // leave a space between messages
+    buzz(10, false);
   }
+
 }
 
 void checkStates(void) {
