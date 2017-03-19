@@ -16,9 +16,11 @@ int PIN_BUZZER = 5;
 int buzzSpeed = 20;
 
 QList<char*> incoming;
+bool messagesPending = false;
 
 void setup(void) {
   incoming.push_back("SOS");
+  messagesPending = true;
 
   pinMode(PIN_COLOR_R, OUTPUT);
   pinMode(PIN_COLOR_G, OUTPUT);
@@ -31,11 +33,35 @@ void setup(void) {
 void loop(void) {
   checkStates();
 
-  while (incoming.size() > 0) {
-    outputString(morseEncode(incoming.front()));
-    incoming.pop_front();
-    // leave a space between messages
-    buzz(10, false);
+  if (messagesPending) {
+    // set to red
+    digitalWrite(PIN_COLOR_R, HIGH);
+    digitalWrite(PIN_COLOR_G, LOW);
+    digitalWrite(PIN_COLOR_B, LOW);
+  }
+  else {
+    // set to green
+    digitalWrite(PIN_COLOR_R, LOW);
+    digitalWrite(PIN_COLOR_G, HIGH);
+    digitalWrite(PIN_COLOR_B, LOW);
+  }
+
+  if (buttonActive) {
+    // set to blue
+    digitalWrite(PIN_COLOR_R, LOW);
+    digitalWrite(PIN_COLOR_G, LOW);
+    digitalWrite(PIN_COLOR_B, HIGH);
+
+    // wait a little after button activation
+    delay(500);
+    while (incoming.size() > 0) {
+      outputString(morseEncode(incoming.front()));
+      incoming.pop_front();
+      // leave a space between messages
+      buzz(10, false);
+    }
+    messagesPending = false;
+    buttonActive = false;
   }
 
 }
