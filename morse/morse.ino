@@ -9,6 +9,8 @@ bool active = false;
 int dialRead = 0;
 int PIN_DIAL = A0;
 
+int PIN_BUZZER = 5;
+
 void setup(void) {
   pinMode(PIN_COLOR_R, OUTPUT);
   pinMode(PIN_COLOR_G, OUTPUT);
@@ -17,9 +19,16 @@ void setup(void) {
   pinMode(PIN_BUTTON, INPUT);
 
   pinMode(PIN_DIAL, INPUT);
+
+  pinMode(PIN_BUZZER, OUTPUT);
 }
 
 void loop(void) {
+
+  digitalWrite(PIN_BUZZER, HIGH);
+  delay(4);
+  digitalWrite(PIN_BUZZER, LOW);
+  delay(4);
 
   // between 11 and 908
   dialRead = analogRead(PIN_DIAL);
