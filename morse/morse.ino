@@ -4,31 +4,30 @@ int PIN_COLOR_B = 13;
 
 int PIN_BUTTON = 4;
 bool buttonState = false;
-bool active = false;
+bool buttonActive = false;
 
 int dialRead = 0;
 int PIN_DIAL = A0;
 
 int PIN_BUZZER = 5;
+int buzzSpeed = 20;
+
+const char* message = "SOS";
 
 void setup(void) {
   pinMode(PIN_COLOR_R, OUTPUT);
   pinMode(PIN_COLOR_G, OUTPUT);
   pinMode(PIN_COLOR_B, OUTPUT);
-
   pinMode(PIN_BUTTON, INPUT);
-
   pinMode(PIN_DIAL, INPUT);
-
   pinMode(PIN_BUZZER, OUTPUT);
 }
 
 void loop(void) {
-
-  digitalWrite(PIN_BUZZER, HIGH);
-  delay(4);
-  digitalWrite(PIN_BUZZER, LOW);
-  delay(4);
+  if (message) {
+    outputString(morseEncode(message));
+    message = "";
+  }
 
   // between 11 and 908
   dialRead = analogRead(PIN_DIAL);
@@ -36,51 +35,45 @@ void loop(void) {
   if (buttonState != digitalRead(PIN_BUTTON)) {
     buttonState = digitalRead(PIN_BUTTON);
     if (buttonState == true) {
-      active = !active;
+      buttonActive = !buttonActive;
     }
   }
+}
 
-  if (active == true) {
-    if (dialRead < 130) {
-      digitalWrite(PIN_COLOR_R, LOW);
-      digitalWrite(PIN_COLOR_G, HIGH);
-      digitalWrite(PIN_COLOR_B, LOW);
-    }
-    else if (dialRead < 260) {
-      digitalWrite(PIN_COLOR_R, LOW);
-      digitalWrite(PIN_COLOR_G, LOW);
-      digitalWrite(PIN_COLOR_B, HIGH);
-    }
-    else if (dialRead < 390) {
-      digitalWrite(PIN_COLOR_R, HIGH);
-      digitalWrite(PIN_COLOR_G, LOW);
-      digitalWrite(PIN_COLOR_B, LOW);
-    }
-    else if (dialRead < 520) {
-      digitalWrite(PIN_COLOR_R, LOW);
-      digitalWrite(PIN_COLOR_G, HIGH);
-      digitalWrite(PIN_COLOR_B, HIGH);
-    }
-    else if (dialRead < 650) {
-      digitalWrite(PIN_COLOR_R, HIGH);
-      digitalWrite(PIN_COLOR_G, HIGH);
-      digitalWrite(PIN_COLOR_B, LOW);
-    }
-    else if (dialRead < 780) {
-      digitalWrite(PIN_COLOR_R, HIGH);
-      digitalWrite(PIN_COLOR_G, LOW);
-      digitalWrite(PIN_COLOR_B, HIGH);
-    }
-    else {
-      digitalWrite(PIN_COLOR_R, HIGH);
-      digitalWrite(PIN_COLOR_G, HIGH);
-      digitalWrite(PIN_COLOR_B, HIGH);
+void buzz(int length, bool active) {
+  int loops = buzzSpeed * length;
+
+  if (active) {
+    for (int i = 0; i < loops; i++) {
+      // 3 is enough for an okay square wave
+      digitalWrite(PIN_BUZZER, HIGH);
+      delay(3);
+      digitalWrite(PIN_BUZZER, LOW);
+      delay(3);
     }
   }
   else {
-    digitalWrite(PIN_COLOR_R, LOW);
-    digitalWrite(PIN_COLOR_G, LOW);
-    digitalWrite(PIN_COLOR_B, LOW);
+    // if we don't want it buzzing just delay
+    delay(loops*6);
+  }
+}
+
+void outputString(String morseMessage) {
+  for(int i = 0; i <= morseMessage.length(); i++) {
+    switch(morseMessage[i]) {
+      case '.': // dit
+        buzz(1, true);
+        buzz(1, false);
+        break;
+
+      case '-': // dah
+        buzz(3, true);
+        buzz(1, false);
+        break;
+
+      case ' ': // gap
+        buzz(1, false);
+    }
   }
 }
 
