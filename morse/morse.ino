@@ -24,13 +24,22 @@ void setup(void) {
 }
 
 void loop(void) {
+  checkStates();
+
   if (message) {
     outputString(morseEncode(message));
     message = "";
   }
+}
+
+void checkStates(void) {
+  // we need to remove this from the loop
+  // so it can happen every time the buzzer sounds
+  // because otherwise it'll be blocked by the delays
 
   // between 11 and 908
   dialRead = analogRead(PIN_DIAL);
+  buzzSpeed = round(map(dialRead, 11, 908, 30, 3));
 
   if (buttonState != digitalRead(PIN_BUTTON)) {
     buttonState = digitalRead(PIN_BUTTON);
@@ -41,6 +50,8 @@ void loop(void) {
 }
 
 void buzz(int length, bool active) {
+  checkStates();
+
   int loops = buzzSpeed * length;
 
   if (active) {
