@@ -1,8 +1,8 @@
 #include <QList.h>
 #include "QList.cpp"
 
-int PIN_COLOR_R = 12;
-int PIN_COLOR_B = 13;
+int PIN_COLOR_R = 13;
+int PIN_COLOR_B = 12;
 
 int PIN_BUTTON = 16;
 bool buttonState = false;

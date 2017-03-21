@@ -45,6 +45,9 @@ void morseLoop(void) {
     if (outputActive) {
       messagesPending = false;
     }
+    else {
+      messagesPending = true;
+    }
 
     buttonActive = false;
   }
