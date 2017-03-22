@@ -7,7 +7,7 @@ void connectToPort() {
   }
 }
 
-void makeRequest() {
+void makeRequest(bool getTweets) {
   // check if it's connected to a port
   if (!client.connected()) {
     connectToPort();
@@ -15,7 +15,7 @@ void makeRequest() {
 
   // make url string
   String url = "/"+twitterUsername;
-  if (lastTweetId != "") {
+  if (getTweets) {
     url = "/"+twitterUsername+"/"+lastTweetId;
   }
   
@@ -29,14 +29,14 @@ void makeRequest() {
     String line = client.readStringUntil('\r\n');
 
     // hackety hack hack
-    // find json string because it starts with a [
-    if (line.startsWith("[")) {
-      processTweets(line);
+    if (line.startsWith("data:")) {
+      line = line.substring(5);
+      if (getTweets) {
+        parseTweets(line);
+      } else {
+        lastTweetId = line;
+      }
     }
   }
-}
-
-void processTweets(String tweets) {
-  Serial.println(tweets);
 }
 

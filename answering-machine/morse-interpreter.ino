@@ -50,6 +50,7 @@ static const struct {const char letter, *code;} MorseMap[] = {
   { '"', ".-..-." },
   { '@', ".--.-." },
   { '&', ".-..." },
+  { '-', "------" },
 };
 
 String morseEncode(String string) {

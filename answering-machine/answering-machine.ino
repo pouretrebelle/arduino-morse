@@ -35,12 +35,10 @@ const char* ssid = "SKYD237F";
 const char* password = "YVUFPPDC";
 const char* host = "tweet-grabber.glitch.me";
 WiFiClient client;
-String lastTweetId = "844298004786036736";
+String lastTweetId = "";
 String twitterUsername = "charlottesbot";
 
 void setup(void) {
-  incoming.push_back("SOS");
-  messagesPending = true;
 
   // Set pin modes
   pinMode(PIN_COLOR_R, OUTPUT);
@@ -60,10 +58,13 @@ void setup(void) {
     delay(500);
     Serial.print(".");
   }
+
+  makeRequest(false);
 }
 
 void loop(void) {
-  makeRequest();
+  makeRequest(true);
+  makeRequest(false);
   morseLoop();
 }
 
