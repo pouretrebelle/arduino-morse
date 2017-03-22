@@ -52,7 +52,7 @@ static const struct {const char letter, *code;} MorseMap[] = {
   { '&', ".-..." },
 };
 
-String morseEncode(char *string) {
+String morseEncode(String string) {
   size_t i, j;
   String morseMessage = "";
   for (i = 0; string[i]; ++i) {
