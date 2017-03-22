@@ -26,13 +26,37 @@ var client = new Twitter({
   access_token_secret: process.env.ACCESS_TOKEN_SECRET
 });
 
+// latest mentioned tweet ID
+function latestId(req, res, next) {
+  res.setTimeout(0);
+  res.send('data:'+getLatestId(req.params.username));
+}
+function getLatestId(username) {
+  var ret;
+  var params = {
+    result_type: 'recent',
+    q: '@'+username,
+    count: 1,
+    include_entities: false,
+  };
+  client.get('search/tweets.json', params, function(error, data, response) {
+    if (!error) {
+      ret = data.statuses[0].id_str;
+    }
+    else {
+      ret = false;
+    }
+  });
+  deasync.loopWhile(function(){ return ret === undefined });
+  return ret;
+}
+
 // main function
 function twitterData(req, res, next) {
   res.setTimeout(0);
-  var json = getTweets(req.params.username, req.params.sinceId);
-  res.send(json);
+  var data = getTweets(req.params.username, req.params.sinceId);
+  res.send('data:'+data);
 };
-
 // get tweets
 function getTweets(username, sinceId) {
   var json = [];
@@ -41,20 +65,19 @@ function getTweets(username, sinceId) {
   var params = {
     result_type: 'recent',
     q: '@'+username,
-    count: 1,
     include_entities: false,
+    since_id: sinceId,
+    count: 100,
   };
-  if (sinceId) {
-    params.since_id = sinceId;
-    params.count = 100;
-  }
 
   client.get('search/tweets.json', params, function(error, data, response) {
     if (!error) {
       for (var i = 0; i < data.statuses.length; i++) {
-        json.push(tweetData(data.statuses[i], username));
+        if (data.statuses[i].id != sinceId) {
+          json.push(tweetData(data.statuses[i], username));
+        }
       }
-      ret = json;
+      ret = json.reverse().join(' --- ');
     }
     else {
       ret = false;
@@ -71,16 +94,12 @@ function tweetData(tweet, username) {
   let firstMetion = new RegExp('^(@'+username+' )');
   let otherMentions = new RegExp('@'+username, 'g');
   text = text.replace(firstMetion, "").replace(otherMentions, "@me");
-  return {
-    user: tweet.user.screen_name,
-    text: text,
-    id: tweet.id,
-  };
+  return tweet.user.screen_name+'--'+text;
 }
 
 // deal w/ the routing
 app.route('/:username/:sinceId').get(twitterData);
-app.route('/:username').get(twitterData);
+app.route('/:username').get(latestId);
 
 // start the server
 var server = app.listen(process.env.PORT || 2000, function () {
