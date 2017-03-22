@@ -52,7 +52,7 @@ function getTweets(username, sinceId) {
   client.get('search/tweets.json', params, function(error, data, response) {
     if (!error) {
       for (var i = 0; i < data.statuses.length; i++) {
-        json.push(tweetData(data.statuses[i]));
+        json.push(tweetData(data.statuses[i], username));
       }
       ret = json;
     }
@@ -66,10 +66,14 @@ function getTweets(username, sinceId) {
 }
 
 // sanitise tweets
-function tweetData(tweet) {
+function tweetData(tweet, username) {
+  let text = tweet.text;
+  let firstMetion = new RegExp('^(@'+username+' )');
+  let otherMentions = new RegExp('@'+username, 'g');
+  text = text.replace(firstMetion, "").replace(otherMentions, "@me");
   return {
     user: tweet.user.screen_name,
-    text: tweet.text,
+    text: text,
     id: tweet.id,
   };
 }
