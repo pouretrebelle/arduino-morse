@@ -11,6 +11,9 @@ void triggerRequest() {
   // Update timer
   timeSinceLookup = timeSinceStart;
 
+  // Reset button state
+  buttonActive = false;
+
   // Flicker before starting
   for (int i = 0; i < 4; i++) {
     digitalWrite(PIN_COLOR_R, HIGH);
