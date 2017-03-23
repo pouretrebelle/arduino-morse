@@ -40,7 +40,7 @@ String twitterUsername = "charlottesbot";
 
 // Define timings
 unsigned long timeSinceStart = 0;
-long lookupFrequency = 1000*60*60; // once a minute
+long lookupFrequency = 1000*60; // once a minute
 unsigned long timeSinceLookup = -lookupFrequency; // cheap way of toggling initially
 
 void setup(void) {
