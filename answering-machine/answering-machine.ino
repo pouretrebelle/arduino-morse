@@ -71,7 +71,6 @@ void setup(void) {
 void loop(void) {
   timeSinceStart = millis();
   if (timeSinceStart > timeSinceLookup + lookupFrequency) {
-    timeSinceLookup = timeSinceStart;
     triggerRequest();
   }
   morseLoop();

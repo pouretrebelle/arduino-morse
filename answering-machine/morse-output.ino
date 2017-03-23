@@ -99,6 +99,11 @@ void checkStates(void) {
     buttonState = digitalRead(PIN_BUTTON);
     if (buttonState == true) {
       buttonActive = !buttonActive;
+
+      // trigger a request if there are no incomings
+      if (buttonActive && !messagesPending) {
+        triggerRequest();
+      }
     }
   }
 }

@@ -8,6 +8,9 @@ void connectToPort() {
 }
 
 void triggerRequest() {
+  // Update timer
+  timeSinceLookup = timeSinceStart;
+
   // Flicker before starting
   for (int i = 0; i < 4; i++) {
     digitalWrite(PIN_COLOR_R, LOW);
