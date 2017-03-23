@@ -14,17 +14,19 @@ void triggerRequest() {
   // Reset button state
   buttonActive = false;
 
-  // Flicker before starting
-  for (int i = 0; i < 4; i++) {
+  if (outputActive) {
+    // Flicker before starting
+    for (int i = 0; i < 4; i++) {
+      digitalWrite(PIN_COLOR_R, HIGH);
+      digitalWrite(PIN_COLOR_B, HIGH);
+      delay(100);
+      digitalWrite(PIN_COLOR_R, LOW);
+      digitalWrite(PIN_COLOR_B, LOW);
+      delay(100);
+    }
     digitalWrite(PIN_COLOR_R, HIGH);
     digitalWrite(PIN_COLOR_B, HIGH);
-    delay(100);
-    digitalWrite(PIN_COLOR_R, LOW);
-    digitalWrite(PIN_COLOR_B, LOW);
-    delay(100);
   }
-  digitalWrite(PIN_COLOR_R, HIGH);
-  digitalWrite(PIN_COLOR_B, HIGH);
 
   makeRequest(true);
   makeRequest(false);
