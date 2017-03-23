@@ -38,6 +38,11 @@ WiFiClient client;
 String lastTweetId = "";
 String twitterUsername = "charlottesbot";
 
+// Define timings
+unsigned long timeSinceStart = 0;
+long lookupFrequency = 1000*60*60; // once a minute
+unsigned long timeSinceLookup = -lookupFrequency; // cheap way of toggling initially
+
 void setup(void) {
 
   // Set pin modes
@@ -59,12 +64,16 @@ void setup(void) {
     Serial.print(".");
   }
 
+  // get the latest tweet ID
   makeRequest(false);
 }
 
 void loop(void) {
-  makeRequest(true);
-  makeRequest(false);
+  timeSinceStart = millis();
+  if (timeSinceStart > timeSinceLookup + lookupFrequency) {
+    timeSinceLookup = timeSinceStart;
+    triggerRequest();
+  }
   morseLoop();
 }
 

@@ -7,6 +7,24 @@ void connectToPort() {
   }
 }
 
+void triggerRequest() {
+  // Flicker before starting
+  for (int i = 0; i < 4; i++) {
+    digitalWrite(PIN_COLOR_R, LOW);
+    digitalWrite(PIN_COLOR_B, HIGH);
+    delay(100);
+    digitalWrite(PIN_COLOR_R, HIGH);
+    digitalWrite(PIN_COLOR_B, LOW);
+    delay(100);
+  }
+  digitalWrite(PIN_COLOR_R, HIGH);
+  digitalWrite(PIN_COLOR_B, HIGH);
+
+  makeRequest(true);
+  makeRequest(false);
+
+}
+
 void makeRequest(bool getTweets) {
   // check if it's connected to a port
   if (!client.connected()) {
