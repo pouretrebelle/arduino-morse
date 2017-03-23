@@ -3,6 +3,9 @@ void morseLoop(void) {
   checkStates();
 
   if (!outputActive) {
+    // turn off LED
+    digitalWrite(PIN_COLOR_R, LOW);
+    digitalWrite(PIN_COLOR_B, LOW);
     return;
   }
 
