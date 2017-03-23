@@ -28,6 +28,13 @@ void morseLoop(void) {
     // wait a little after button activation
     delay(200);
 
+    // message counter
+    for (int i = 0; i < incoming.size(); i++) {
+      buzz(6, true);
+      buzz(2, false);
+    }
+    buzz(6, false);
+
     // loop through incoming, only if output is active
     while (incoming.size() > 0 && outputActive) {
       outputString(morseEncode(incoming.front()));
